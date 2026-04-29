@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My AI Website</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        #output { background: #f4f4f4; padding: 15px; margin-top: 20px; border-radius: 8px; min-height: 50px; }
+        button { padding: 10px 20px; cursor: pointer; background: #0070f3; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Ask the AI</h1>
+    
+    <textarea id="input" placeholder="Type your question here..."></textarea>
+    
+    <br>
+    
+    <button onclick="askAI()">Send to AI</button>
+
+    <h3>Response:</h3>
+    <div id="output">The AI's answer will show up here...</div>
+
+    <script>
+      async function askAI() {
+        const outputDiv = document.getElementById('output');
+        const userPrompt = document.getElementById('input').value;
+        
+        outputDiv.innerText = "Thinking..."; // Let the user know it's working
+
+        try {
+            // We call YOUR Vercel function, which safely holds the API key
+            const response = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prompt: userPrompt })
+            });
+
+            const result = await response.json();
+            
+            // Display the text from the AI response
+            outputDiv.innerText = result.choices[0].message.content;
+        } catch (error) {
+            outputDiv.innerText = "Error: Could not connect to the API. Make sure you are deployed on Vercel!";
+            console.error(error);
+        }
+      }
+    </script>
+
+</body>
+</html>
